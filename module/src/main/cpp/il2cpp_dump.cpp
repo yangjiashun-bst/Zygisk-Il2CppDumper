@@ -103,17 +103,16 @@ std::string dump_method(Il2CppClass *klass) {
 
     while (auto method = il2cpp_class_get_methods(klass, &iter)) {
         std::stringstream outJson;
+        bool isFind = false;
         //TODO attribute
         if (method->methodPointer) {
             outPut << "\t// RVA: 0x";
             outPut << std::hex << (uint64_t) method->methodPointer - il2cpp_base;
             outPut << " VA: 0x";
             outPut << std::hex << (uint64_t) method->methodPointer;
-
+            isFind = true;
             outJson << std::hex << (uint64_t) method->methodPointer - il2cpp_base;
             outJson << "|" << moduleName << "." << clsName <<"$$" << il2cpp_method_get_name(method);
-            outJson << "\n\t";
-            outJsons.push_back(outJson.str());
         } else {
             outPut << "\t// RVA: 0x VA: 0x0";
         }
@@ -131,6 +130,9 @@ std::string dump_method(Il2CppClass *klass) {
         }
         auto return_class = il2cpp_class_from_type(return_type);
         outPut << il2cpp_class_get_name(return_class) << " " << il2cpp_method_get_name(method)
+               << "(";
+        
+        outJson << "|" << il2cpp_class_get_name(return_class) << " " << il2cpp_method_get_name(method)
                << "(";
         auto param_count = il2cpp_method_get_param_count(method);
         for (int i = 0; i < param_count; ++i) {
@@ -156,11 +158,20 @@ std::string dump_method(Il2CppClass *klass) {
             outPut << il2cpp_class_get_name(parameter_class) << " "
                    << il2cpp_method_get_param_name(method, i);
             outPut << ", ";
+
+            outJson << il2cpp_class_get_name(parameter_class) << " "
+                   << il2cpp_method_get_param_name(method, i);
+            outJson << ", ";
         }
         if (param_count > 0) {
             outPut.seekp(-2, outPut.cur);
+            outJson.seekp(-2, outJson.cur);
         }
         outPut << ") { }\n";
+        outJson << ");\n";
+        if (isFind) {
+            outJsons.push_back(outJson.str());
+        }
         //TODO GenericInstMethod
     }
     return outPut.str();
