@@ -439,8 +439,8 @@ void il2cpp_dump(const char *outDir) {
     auto outJsonPath = std::string(outDir).append("/files/script.json");
     std::ofstream outJsonStream(outJsonPath);
   
-    auto countJson = outJsons.size();
-    LOGI("json count=%lu",countJson);
+    int countJson = outJsons.size();
+    LOGI("json count=%d",countJson);
     for (int i = 0; i < countJson; ++i) {
         outJsonStream << outJsons[i];
     }
