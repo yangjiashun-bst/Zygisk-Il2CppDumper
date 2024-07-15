@@ -24,7 +24,7 @@
 #undef DO_API
 
 static uint64_t il2cpp_base = 0;
-
+static std::vector<std::string> outJsons;
 void init_il2cpp_api(void *handle) {
 #define DO_API(r, n, p) {                      \
     n = (r (*) p)xdl_sym(handle, #n, nullptr); \
@@ -96,6 +96,11 @@ std::string dump_method(Il2CppClass *klass) {
     std::stringstream outPut;
     outPut << "\n\t// Methods\n";
     void *iter = nullptr;
+
+    std::stringstream outJson;
+    const char* moduleName = il2cpp_class_get_namespace(klass);
+    const char* clsName = il2cpp_class_get_name(klass);
+
     while (auto method = il2cpp_class_get_methods(klass, &iter)) {
         //TODO attribute
         if (method->methodPointer) {
@@ -103,6 +108,9 @@ std::string dump_method(Il2CppClass *klass) {
             outPut << std::hex << (uint64_t) method->methodPointer - il2cpp_base;
             outPut << " VA: 0x";
             outPut << std::hex << (uint64_t) method->methodPointer;
+            outJson << std::hex << (uint64_t) method->methodPointer - il2cpp_base << "|" << moduleName << "." << clsName <<"$$" << il2cpp_method_get_name(method);
+            outJson << "\n\t";
+            outJsons.push_back(outJson);
         } else {
             outPut << "\t// RVA: 0x VA: 0x0";
         }
@@ -323,6 +331,7 @@ std::string dump_type(const Il2CppType *type) {
 }
 
 void il2cpp_api_init(void *handle) {
+    outJsons.clear();
     LOGI("il2cpp_handle: %p", handle);
     init_il2cpp_api(handle);
     if (il2cpp_domain_get_assemblies) {
@@ -354,6 +363,7 @@ void il2cpp_dump(const char *outDir) {
         imageOutput << "// Image " << i << ": " << il2cpp_image_get_name(image) << "\n";
     }
     std::vector<std::string> outPuts;
+    
     if (il2cpp_image_get_class) {
         LOGI("Version greater than 2018.3");
         //使用il2cpp_image_get_class
@@ -425,5 +435,16 @@ void il2cpp_dump(const char *outDir) {
         outStream << outPuts[i];
     }
     outStream.close();
+
+    auto outJsonPath = std::string(outDir).append("/files/script.json");
+    std::ofstream outJsonStream(outJsonPath);
+  
+    auto countJson = outJsons.size();
+    LOGI("json count=%d",countJson);
+    for (int i = 0; i < countJson; ++i) {
+        outJsonStream << outJsons[i];
+    }
+    outJsonStream.close();
+
     LOGI("dump done!");
 }
