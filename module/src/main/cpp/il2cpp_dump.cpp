@@ -132,8 +132,8 @@ std::string dump_method(Il2CppClass *klass) {
         outPut << il2cpp_class_get_name(return_class) << " " << il2cpp_method_get_name(method)
                << "(";
         
-        outJson << "|" << il2cpp_class_get_name(return_class) << " " << il2cpp_method_get_name(method)
-               << "(";
+        outJson << "|" << il2cpp_class_get_name(return_class) << " "<< moduleName << "." << clsName <<"__" 
+                <<il2cpp_method_get_name(method) << "(";
         auto param_count = il2cpp_method_get_param_count(method);
         for (int i = 0; i < param_count; ++i) {
             auto param = il2cpp_method_get_param(method, i);
