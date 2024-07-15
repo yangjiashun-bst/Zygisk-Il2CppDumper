@@ -97,18 +97,21 @@ std::string dump_method(Il2CppClass *klass) {
     outPut << "\n\t// Methods\n";
     void *iter = nullptr;
 
-    std::stringstream outJson;
+    
     const char* moduleName = il2cpp_class_get_namespace(klass);
     const char* clsName = il2cpp_class_get_name(klass);
 
     while (auto method = il2cpp_class_get_methods(klass, &iter)) {
+        std::stringstream outJson;
         //TODO attribute
         if (method->methodPointer) {
             outPut << "\t// RVA: 0x";
             outPut << std::hex << (uint64_t) method->methodPointer - il2cpp_base;
             outPut << " VA: 0x";
             outPut << std::hex << (uint64_t) method->methodPointer;
-            outJson << std::hex << (uint64_t) method->methodPointer - il2cpp_base << "|" << moduleName << "." << clsName <<"$$" << il2cpp_method_get_name(method);
+
+            outJson << std::hex << (uint64_t) method->methodPointer - il2cpp_base;
+            outJson << "|" << moduleName << "." << clsName <<"$$" << il2cpp_method_get_name(method);
             outJson << "\n\t";
             outJsons.push_back(outJson.str());
         } else {
