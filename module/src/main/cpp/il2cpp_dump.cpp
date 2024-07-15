@@ -110,7 +110,7 @@ std::string dump_method(Il2CppClass *klass) {
             outPut << std::hex << (uint64_t) method->methodPointer;
             outJson << std::hex << (uint64_t) method->methodPointer - il2cpp_base << "|" << moduleName << "." << clsName <<"$$" << il2cpp_method_get_name(method);
             outJson << "\n\t";
-            outJsons.push_back(outJson);
+            outJsons.push_back(outJson.str());
         } else {
             outPut << "\t// RVA: 0x VA: 0x0";
         }
