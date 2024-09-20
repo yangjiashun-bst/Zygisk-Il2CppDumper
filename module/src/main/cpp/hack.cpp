@@ -21,14 +21,6 @@
 void hack_start(const char *game_data_dir) {
     bool load = false;
 #ifdef HOOK_SO
-    
-        void *handle = xdl_open(HOOK_SO, 0);
-        if (handle) {
-            LOGE("hook lib loaded");
-        } else {
-             LOGE("hook lib fail");
-        }
-    
     return;
 #endif
     for (int i = 0; i < 10; i++) {
@@ -218,6 +210,15 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     auto game_data_dir = (const char *) reserved;
     std::thread hack_thread(hack_start, game_data_dir);
     hack_thread.detach();
+    #ifdef HOOK_SO
+        void *handle = dlopen(HOOK_SO, RTLD_NOW);
+        if (handle) {
+            LOGE("hook lib loaded");
+        } else {
+             LOGE("hook lib fail");
+        }
+    #endif
+
     return JNI_VERSION_1_6;
 }
 
