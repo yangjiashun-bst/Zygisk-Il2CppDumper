@@ -21,7 +21,7 @@
 void hack_start(const char *game_data_dir) {
     bool load = false;
 #ifdef HOOK_SO
-    sleep(1);
+  
         void *handle = dlopen(HOOK_SO, 0);
         if (handle) {
             LOGE("hook lib loaded");
