@@ -21,13 +21,14 @@
 void hack_start(const char *game_data_dir) {
     bool load = false;
 #ifdef HOOK_SO
-    
+    sleep(1);
         void *handle = xdl_open(HOOK_SO, 0);
         if (handle) {
             LOGE("hook lib loaded");
         } else {
              LOGE("hook lib fail");
         }
+        return;
 #endif
     for (int i = 0; i < 10; i++) {
         void *handle = xdl_open("libil2cpp.so", 0);
