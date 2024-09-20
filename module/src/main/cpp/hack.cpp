@@ -26,7 +26,7 @@ void hack_start(const char *game_data_dir) {
         if (handle) {
             LOGE("hook lib loaded");
         } else {
-             LOGE("hook lib fail");
+             LOGE("hook lib fail err=%s",dlerror());
         }
         return;
 #endif
