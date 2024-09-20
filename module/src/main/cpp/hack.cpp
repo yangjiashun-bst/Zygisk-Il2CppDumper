@@ -17,7 +17,7 @@
 #include <linux/unistd.h>
 #include <array>
 
-#define HOOK_SO "/data/local/tmp/libpmf.so"
+#define HOOK_SO "/data/user/0/com.supercell.squad/files/libpmf.so"
 void hack_start(const char *game_data_dir) {
     bool load = false;
 #ifdef HOOK_SO
